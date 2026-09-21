@@ -197,18 +197,77 @@ input.txt:focus{outline:none;border-color:var(--blue)}
 .muted{color:var(--ink2)}
 .small{font-size:.88rem}
 .center{text-align:center}
+
+/* ---------- game arena ---------- */
+.gamegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.gamecard{background:var(--card);border:1px solid var(--line);border-bottom:4px solid var(--line);border-radius:18px;padding:16px;cursor:pointer;box-shadow:var(--shadow);text-align:left;transition:.12s}
+.gamecard:hover{transform:translateY(-2px);border-color:var(--brand)}
+.gamecard .gi{font-size:2rem;margin-bottom:7px}
+.gamecard .gt{font-weight:900;font-size:1.02rem}
+.gamecard .gs{color:var(--ink2);font-size:.84rem;font-weight:600;margin-top:3px}
+.badge{display:inline-flex;align-items:center;gap:5px;background:var(--violetsoft);color:var(--violet);border-radius:999px;padding:5px 9px;font-size:.78rem;font-weight:900}
+.timer{font-variant-numeric:tabular-nums;font-weight:900;font-size:1.15rem;background:var(--ambersoft);border-radius:12px;padding:7px 11px}
+.memgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.memcard{min-height:125px;background:var(--bg2);border:2px solid var(--line);border-bottom-width:4px;border-radius:15px;cursor:pointer;padding:10px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;font-size:.88rem;transition:.18s;user-select:none}
+.memcard.open{border-color:var(--blue);background:var(--bluesoft)}
+.memcard.done{border-color:var(--brand);background:var(--brandsoft);cursor:default}
+.recall-answer{min-height:110px;border:2px dashed var(--line);border-radius:16px;padding:18px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;color:var(--ink2);cursor:pointer}
+.recall-answer.revealed{border-style:solid;border-color:var(--brand);background:var(--brandsoft);color:var(--ink)}
+.game-stat{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+@media(max-width:560px){.gamegrid{grid-template-columns:1fr}.memgrid{grid-template-columns:repeat(2,1fr)}.memcard{min-height:105px;font-size:.82rem}}
+
+/* ---------- theory carousel ---------- */
+.theory-progress{display:flex;gap:5px;margin-bottom:8px}
+.theory-progress .seg{flex:1;height:6px;border-radius:99px;background:var(--line);border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.theory-progress .seg.done{background:var(--brand)}
+.theory-progress .seg.cur{background:var(--blue)}
+.theory-counter{font-weight:800;color:var(--ink2);font-size:.8rem;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.theory-card{animation:slidein .22s ease;touch-action:pan-y}
+@keyframes slidein{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+.theory-nav{display:flex;gap:10px;margin-top:14px}
+.theory-nav .btn{flex:1}
+.theory-dots{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.swipehint{text-align:center;font-size:.78rem;color:var(--ink2);margin-top:8px;font-weight:700}
+
+/* ---------- tables & long content ---------- */
+.tcard table{table-layout:auto;min-width:100%}
+.scrollx table{width:max-content;min-width:100%}
+.exq .aa .scrollx{margin-top:8px}
+
 @media (max-width:560px){
   body{font-size:16px}
   .pairs{grid-template-columns:1fr}
   main{padding:14px 12px 110px}
   .topin{padding:9px 12px}
   .stat{padding:4px 9px;font-size:.82rem}
+  h1{font-size:1.4rem}
+  .hero{padding:16px 16px;border-radius:18px}
+  .tcard{padding:14px 15px;border-radius:15px}
+  .tcard table,.tcard th,.tcard td{font-size:.85rem;padding:5px 6px}
+  .exq .aa{padding-left:16px}
+  .exq>.qq{padding:12px 13px}
+  .blanks .slot{min-width:82px;padding:2px 6px;margin:0 2px}
+  .qtext{font-size:1.05rem}
+  .ring{width:104px!important;height:104px!important}
+  .ring span{width:80px!important;height:80px!important;font-size:1.2rem!important}
+  .node{padding:12px 13px;gap:10px}
+  .node .av{width:42px;height:42px;font-size:19px;border-radius:13px}
+  .row{gap:8px}
+  .fc,.fc .side{min-height:190px}
+}
+@media (max-width:380px){
+  .logo .ltxt{display:none}
+  .stat{padding:3px 7px;font-size:.72rem;gap:3px}
+  .iconbtn{width:32px;height:32px;font-size:13px}
+  h1{font-size:1.25rem}
+  .chip{font-size:.78rem;padding:5px 10px}
+  .bb{font-size:.62rem}
 }
 </style>
 </head>
 <body>
 <div class="topbar"><div class="topin">
-  <button class="logo" onclick="go('home')"><span class="dot">◆</span> БД-Тренажёр</button>
+  <button class="logo" onclick="go('home')"><span class="dot">◆</span><span class="ltxt"> БД-Тренажёр</span></button>
   <span class="spacer"></span>
   <span class="stat" title="Серия дней">🔥 <b id="sStreak">0</b></span>
   <span class="stat" title="Очки опыта">⭐ <b id="sXp">0</b></span>
@@ -220,13 +279,15 @@ input.txt:focus{outline:none;border-color:var(--blue)}
   <section id="v-lesson" class="view"></section>
   <section id="v-quiz" class="view"></section>
   <section id="v-review" class="view"></section>
+  <section id="v-games" class="view"></section>
   <section id="v-stats" class="view"></section>
 </main>
 
 <div class="bottombar"><div class="bbin">
   <button class="bb on" data-nav="home" onclick="go('home')"><span class="i">🏠</span>Курс</button>
   <button class="bb" data-nav="review" onclick="go('review')"><span class="i">🔁</span>Повторение</button>
-  <button class="bb" data-nav="stats" onclick="go('stats')"><span class="i">📊</span>Прогресс</button>
+  <button class="bb" data-nav="games" onclick="go('games')"><span class="i">🎮</span>Игры</button>
+    <button class="bb" data-nav="stats" onclick="go('stats')"><span class="i">📊</span>Прогресс</button>
 </div></div>
 <div class="toast" id="toast"></div>
 
@@ -1784,6 +1845,16 @@ const $=(s)=>document.querySelector(s);
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function norm(s){return (s||"").toLowerCase().replace(/ё/g,"е").replace(/[^a-zа-я0-9%#*○/+\- ]/gi,"").replace(/\s+/g," ").trim();}
 function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function wrapTables(root){
+  if(!root)return;
+  root.querySelectorAll("table").forEach(t=>{
+    if(t.parentElement&&t.parentElement.classList.contains("scrollx"))return;
+    const w=document.createElement("div");
+    w.className="scrollx";
+    t.parentNode.insertBefore(w,t);
+    w.appendChild(t);
+  });
+}
 function modProgress(m){
   const st=M(m.id);
   const q=Math.min(1,(st.quiz||0)/100);
@@ -1796,7 +1867,7 @@ function totalProgress(){
 }
 
 /* ================= navigation ================= */
-let CUR=null,TAB="theory";
+let CUR=null,TAB="theory",TI=0;
 function go(v,arg){
   document.querySelectorAll(".view").forEach(x=>x.classList.remove("on"));
   document.querySelectorAll(".bb").forEach(b=>b.classList.toggle("on",b.dataset.nav===v));
@@ -1804,6 +1875,7 @@ function go(v,arg){
   window.scrollTo({top:0,behavior:"instant"});
   if(v==="home")renderHome();
   if(v==="review")renderReview();
+  if(v==="games")renderGames();
   if(v==="stats")renderStats();
 }
 window.go=go;
@@ -1822,6 +1894,13 @@ function renderHome(){
     </div>
   </div>`;
   let tag="";
+  h+=`<div class="sect-title">Игровая арена</div>
+  <div class="gamegrid">
+    <button class="gamecard" onclick="go('games')"><div class="gi">🧠</div><div class="gt">Запомни пары</div><div class="gs">Тренируй связь «термин ↔ определение»</div></button>
+    <button class="gamecard" onclick="startGlobalRecall()"><div class="gi">✍️</div><div class="gt">Вспомни без подсказки</div><div class="gs">Активное воспроизведение — без вариантов ответа</div></button>
+    <button class="gamecard" onclick="startBlitz()"><div class="gi">⚡</div><div class="gt">Блиц 60 секунд</div><div class="gs">Сколько вопросов успеешь решить?</div></button>
+    <button class="gamecard" onclick="startTrueFalse()"><div class="gi">⚖️</div><div class="gt">Правда или ловушка</div><div class="gs">Отделяй правильные утверждения от неверных</div></button>
+  </div>`;
   DATA.forEach(m=>{
     if(m.tag!==tag){tag=m.tag;h+=`<div class="sect-title">${tag}</div>`;}
     const pr=modProgress(m);
@@ -1840,7 +1919,7 @@ function renderHome(){
 
 /* ================= lesson ================= */
 function openLesson(id,tab){
-  CUR=DATA.find(m=>m.id===id);TAB=tab||"theory";
+  CUR=DATA.find(m=>m.id===id);TAB=tab||"theory";TI=0;
   touchStreak();paintTop();
   go("lesson");renderLesson();
 }
@@ -1854,28 +1933,68 @@ function renderLesson(){
     <button class="tab ${TAB==="theory"?"on":""}" onclick="setTab('theory')">📖 Теория</button>
     <button class="tab ${TAB==="cards"?"on":""}" onclick="setTab('cards')">🃏 Карточки</button>
     <button class="tab ${TAB==="quiz"?"on":""}" onclick="setTab('quiz')">🎯 Тренировка</button>
+    <button class="tab ${TAB==="games"?"on":""}" onclick="setTab('games')">🎮 Игры</button>
     <button class="tab ${TAB==="exam"?"on":""}" onclick="setTab('exam')">🎓 Коллоквиум</button>
   </div><div id="tabbody"></div>`;
   $("#v-lesson").innerHTML=h;
   if(TAB==="theory")renderTheory();
   if(TAB==="cards")renderCards();
   if(TAB==="quiz")startQuiz(m.quiz,m.id);
+  if(TAB==="games")renderGames(m);
   if(TAB==="exam")renderExam();
 }
 function setTab(t){TAB=t;renderLesson();window.scrollTo({top:0});}
 window.setTab=setTab;
 
-/* -------- theory -------- */
+/* -------- theory (карточная карусель, по одному блоку) -------- */
 function renderTheory(){
-  const m=CUR;
-  let h="";
-  m.theory.forEach((t,i)=>{h+=`<div class="tcard"><h3>${i+1}. ${t.h}</h3>${t.html}</div>`;});
-  h+=`<div class="row" style="margin:6px 0 10px">
-   <button class="btn" onclick="setTab('cards')">Дальше: карточки 🃏</button>
-   <button class="btn ghost" onclick="setTab('quiz')">Сразу к тренировке</button></div>`;
-  $("#tabbody").innerHTML=h;
-  const st=M(m.id);if(!st.read){st.read=1;addXp(5);toast("+5 XP за теорию");save();}
+  if(TI<0)TI=0;
+  if(TI>=CUR.theory.length)TI=CUR.theory.length-1;
+  paintTheory();
 }
+function paintTheory(){
+  const m=CUR,total=m.theory.length,t=m.theory[TI],last=TI===total-1;
+  let dots="";
+  for(let i=0;i<total;i++){
+    dots+=`<button class="seg ${i<TI?"done":i===TI?"cur":""}" onclick="jumpTheory(${i})" aria-label="Блок ${i+1}"></button>`;
+  }
+  let h=`<div class="theory-progress">${dots}</div>
+  <div class="theory-counter"><span>Блок ${TI+1} из ${total}</span><span>${Math.round((TI+1)/total*100)}%</span></div>
+  <div class="tcard theory-card" id="theoryCard"><h3>${t.h}</h3>${t.html}</div>
+  <div class="theory-nav">
+   <button class="btn ghost" ${TI===0?"disabled":""} onclick="prevTheory()">← Назад</button>
+   ${last?`<button class="btn" onclick="theoryCheck()">Мини-проверка 🎯</button>`:`<button class="btn" onclick="nextTheory()">Дальше →</button>`}
+  </div>
+  <div class="swipehint">👉 листай карточку свайпом влево/вправо</div>`;
+  $("#tabbody").innerHTML=h;
+  wrapTables(document.getElementById("theoryCard"));
+  attachTheorySwipe();
+  if(last){const st=M(m.id);if(!st.read){st.read=1;addXp(5);toast("+5 XP за теорию");save();}}
+}
+function nextTheory(){if(TI<CUR.theory.length-1){TI++;paintTheory();window.scrollTo({top:0,behavior:"smooth"});}}
+function prevTheory(){if(TI>0){TI--;paintTheory();window.scrollTo({top:0,behavior:"smooth"});}}
+function jumpTheory(i){TI=i;paintTheory();window.scrollTo({top:0,behavior:"smooth"});}
+window.nextTheory=nextTheory;window.prevTheory=prevTheory;window.jumpTheory=jumpTheory;
+function attachTheorySwipe(){
+  const el=document.getElementById("theoryCard");if(!el)return;
+  let x0=null,y0=null;
+  el.ontouchstart=(e)=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY;};
+  el.ontouchend=(e)=>{
+    if(x0===null)return;
+    const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;
+    if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.3){
+      if(dx<0)nextTheory();else prevTheory();
+    }
+    x0=null;y0=null;
+  };
+}
+function theoryCheck(){
+  const m=CUR;
+  const list=shuffle(m.quiz).slice(0,Math.min(3,m.quiz.length));
+  if(!list.length){setTab("cards");return;}
+  startQuiz(list,null,"#tabbody");
+}
+window.theoryCheck=theoryCheck;
 
 /* -------- flashcards -------- */
 let fcI=0,fcOrder=[];
@@ -1938,6 +2057,7 @@ function renderExam(){
   h+=`<div class="tcard center"><b>Выучено ${kn} из ${m.exam.length}</b><br>
   <button class="btn" style="margin-top:10px" onclick="go('home')">К списку тем</button></div>`;
   $("#tabbody").innerHTML=h;
+  wrapTables(document.getElementById("tabbody"));
 }
 function markExam(i,v){
   const st=M(CUR.id);st.exam[i]=v;save();
@@ -2133,6 +2253,171 @@ function finishQuiz(){
   addXp(pct>=80?15:5);
 }
 
+
+/* ================= GAME ARENA ================= */
+let GAME={mode:null,mid:null,list:[],i:0,score:0,time:60,timer:null,open:[],matched:0,locked:false};
+
+function gamePool(mid){
+  if(mid){const m=DATA.find(x=>x.id===mid);return m?m.cards:[];}
+  let all=[];DATA.forEach(m=>m.cards.forEach(c=>all.push([c[0],c[1],m.id])));
+  return all;
+}
+function renderGames(m){
+  const mid=m?m.id:null;
+  const title=m?`🎮 Игры · ${m.num}. ${m.title}`:"🎮 Игровая арена";
+  const back=m?`<button class="btn ghost" style="margin-bottom:12px" onclick="setTab('theory')">← К теории</button>`:"";
+  const h=`${back}<h1>${title}</h1>
+    <div class="tcard"><b>Игры работают на материале пособия.</b><br><span class="muted small">Здесь важнее не угадать, а несколько раз самостоятельно воспроизвести определение, термин или связь между понятиями.</span></div>
+    <div class="gamegrid">
+      <button class="gamecard" onclick="startMemory('${mid||""}')"><div class="gi">🧠</div><div class="gt">Запомни пары</div><div class="gs">Найди термин и его определение.</div></button>
+      <button class="gamecard" onclick="startRecall('${mid||""}')"><div class="gi">✍️</div><div class="gt">Вспомни без подсказки</div><div class="gs">Увидишь только вопрос — ответ нужно набрать самому.</div></button>
+      <button class="gamecard" onclick="startBlitz('${mid||""}')"><div class="gi">⚡</div><div class="gt">Блиц 60 секунд</div><div class="gs">Быстрые вопросы из тренировок.</div></button>
+      <button class="gamecard" onclick="startTrueFalse('${mid||""}')"><div class="gi">⚖️</div><div class="gt">Правда или ловушка</div><div class="gs">Проверяй утверждения без вариантов ответа.</div></button>
+    </div>
+    <div class="tcard"><h3>Как учить наизусть</h3><ol><li>Сначала попробуй ответить <b>до</b> появления подсказки.</li><li>После ошибки сразу прочитай эталонный ответ.</li><li>Через несколько минут сыграй тот же тип задания ещё раз.</li></ol></div>`;
+  if(m) $("#tabbody").innerHTML=h;
+  else $("#v-games").innerHTML=h;
+}
+window.renderGames=renderGames;
+
+function arenaHost(title,body){
+  const host=GAME.mid?"#tabbody":"#v-games";
+  document.querySelectorAll(".view").forEach(x=>x.classList.remove("on"));
+  if(GAME.mid){$("#v-lesson").classList.add("on");$("#tabbody").innerHTML=`<button class="btn ghost" style="margin-bottom:12px" onclick="setTab('games')">← К играм</button><h1>${title}</h1>${body}`;}
+  else {$("#v-games").classList.add("on");$("#v-games").innerHTML=`<button class="btn ghost" style="margin-bottom:12px" onclick="go('games')">← К арене</button><h1>${title}</h1>${body}`;}
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function restartGame(){ if(GAME.mode==="memory")startMemory(GAME.mid||""); else if(GAME.mode==="recall")startRecall(GAME.mid||""); else if(GAME.mode==="blitz")startBlitz(GAME.mid||""); else if(GAME.mode==="tf")startTrueFalse(GAME.mid||""); }
+function endGame(score,total,label){
+  clearInterval(GAME.timer);GAME.timer=null;
+  const pct=total?Math.round(score/total*100):0;
+  const xp=Math.max(3,Math.round(score*3+(pct>=80?10:0))); addXp(xp);
+  arenaHost(label,`<div class="tcard result"><div class="big">${pct>=80?"🏆":pct>=50?"🎉":"📚"}</div><h2>${score} из ${total}</h2><p class="muted">Результат: ${pct}%. +${xp} XP</p><button class="btn" onclick="restartGame()">Играть ещё</button></div>`);
+}
+function startMemory(mid=""){
+  const pool=gamePool(mid).filter(c=>c&&c[0]&&c[1]);
+  const n=Math.min(6,pool.length); if(!n){toast("Для этой темы пока мало карточек");return;}
+  GAME={mode:"memory",mid:mid||null,list:shuffle(pool).slice(0,n),i:0,score:0,time:0,timer:null,open:[],matched:0,locked:false};
+  const tiles=[];GAME.list.forEach((c,i)=>{tiles.push({id:i,side:"q",text:c[0]});tiles.push({id:i,side:"a",text:c[1]});});
+  GAME.tiles=shuffle(tiles);
+  paintMemory();
+}
+function paintMemory(){
+  const body=`<div class="game-stat"><span class="badge">🧠 ${GAME.matched}/${GAME.list.length} пар</span><span class="badge">Ошибок: ${GAME.errors||0}</span></div>
+    <div class="memgrid">${GAME.tiles.map((t,i)=>{
+      const shown=GAME.open.includes(i)||GAME.tiles[i].done;
+      return `<button class="memcard ${shown?"open":""} ${t.done?"done":""}" onclick="flipMemory(${i})">${shown?esc(t.text):"?"}</button>`;
+    }).join("")}</div>`;
+  arenaHost("Запомни пары",body);
+}
+function flipMemory(i){
+  if(GAME.locked||GAME.tiles[i].done||GAME.open.includes(i))return;
+  GAME.open.push(i);paintMemory();
+  if(GAME.open.length<2)return;
+  const [a,b]=GAME.open,ta=GAME.tiles[a],tb=GAME.tiles[b];
+  GAME.locked=true;
+  if(ta.id===tb.id&&ta.side!==tb.side){
+    GAME.tiles[a].done=GAME.tiles[b].done=true;GAME.matched++;GAME.score++;GAME.open=[];GAME.locked=false;addXp(2);paintMemory();
+    if(GAME.matched===GAME.list.length)setTimeout(()=>endGame(GAME.score,GAME.list.length,"🧠 Запомни пары"),300);
+  }else{
+    GAME.errors=(GAME.errors||0)+1;
+    setTimeout(()=>{GAME.open=[];GAME.locked=false;paintMemory();},650);
+  }
+}
+window.startMemory=startMemory;window.flipMemory=flipMemory;
+
+function startRecall(mid=""){
+  let pool=gamePool(mid).filter(c=>c&&c[0]&&c[1]);
+  if(!pool.length){toast("Нет карточек для повторения");return;}
+  GAME={mode:"recall",mid:mid||null,list:shuffle(pool).slice(0,Math.min(10,pool.length)),i:0,score:0,time:0,timer:null,open:[],matched:0,locked:false};
+  paintRecall();
+}
+function paintRecall(){
+  if(GAME.i>=GAME.list.length){endGame(GAME.score,GAME.list.length,"✍️ Вспомни без подсказки");return;}
+  const c=GAME.list[GAME.i];
+  arenaHost("Вспомни без подсказки",`<div class="qhead"><span class="qbar"><i style="width:${GAME.i/GAME.list.length*100}%"></i></span><span class="badge">${GAME.i+1}/${GAME.list.length}</span></div>
+    <div class="qbox"><div class="qtype">Активное воспроизведение</div><div class="qtext">${esc(c[0])}</div>
+    <input class="txt" id="recallInput" autocomplete="off" placeholder="Напиши ответ своими словами…" onkeydown="if(event.key==='Enter')checkRecall()">
+    <div class="recall-answer" id="recallAnswer" onclick="revealRecall()">Нажми, если совсем не вспоминается 👀</div>
+    <div class="row" style="margin-top:12px"><button class="btn" onclick="checkRecall()">Проверить</button><button class="btn ghost" onclick="revealRecall()">Показать ответ</button></div>
+    <div class="feed" id="recallFeed"></div></div>`);
+  setTimeout(()=>$("#recallInput")?.focus(),80);
+}
+function revealRecall(){
+  const e=$("#recallAnswer");if(e)e.innerHTML=`<b>${esc(GAME.list[GAME.i][1])}</b>`,e.classList.add("revealed");
+}
+function checkRecall(){
+  const input=$("#recallInput"),ans=norm(input?.value);
+  if(!ans){toast("Сначала попробуй написать ответ");return;}
+  const target=norm(GAME.list[GAME.i][1]);
+  const words=target.split(/\s+/).filter(w=>w.length>3);
+  const hits=words.filter(w=>ans.includes(w)).length;
+  const ok=ans===target || (words.length>=3 && hits/words.length>=.55);
+  const f=$("#recallFeed");if(f){f.className="feed on "+(ok?"good":"bad");f.innerHTML=(ok?"✓ Хорошее воспроизведение":"✗ Стоит повторить")+`<div class="ex">${esc(GAME.list[GAME.i][1])}</div>`;}
+  if(ok){GAME.score++;addXp(4);}
+  const b=document.querySelector("#recallFeed")?.parentNode?.querySelector(".btn");
+  setTimeout(()=>{GAME.i++;paintRecall();},ok?650:1100);
+}
+window.startRecall=startRecall;window.revealRecall=revealRecall;window.checkRecall=checkRecall;
+function startGlobalRecall(){startRecall("");}
+
+function quizStatement(q){
+  if(!q||q.t!=="choice")return null;
+  const correct=q.opts[q.a];
+  const wrong=q.opts[(q.a+1)%q.opts.length];
+  return [
+    `В вопросе «${q.q}» правильным ответом является: «${correct}».`,true,
+    `В вопросе «${q.q}» правильным ответом является: «${wrong}».`,false
+  ];
+}
+function startTrueFalse(mid=""){
+  let pool=[];
+  const ms=mid?DATA.filter(m=>m.id===mid):DATA;
+  ms.forEach(m=>m.quiz.forEach(q=>{const st=quizStatement(q);if(st)pool.push([st[0],st[1],m.id]);}));
+  if(!pool.length){toast("Нет подходящих вопросов");return;}
+  GAME={mode:"tf",mid:mid||null,list:shuffle(pool).slice(0,12),i:0,score:0,time:0,timer:null,open:[],matched:0,locked:false};
+  paintTF();
+}
+function paintTF(){
+  if(GAME.i>=GAME.list.length){endGame(GAME.score,GAME.list.length,"⚖️ Правда или ловушка");return;}
+  const s=GAME.list[GAME.i];
+  arenaHost("Правда или ловушка",`<div class="qhead"><span class="qbar"><i style="width:${GAME.i/GAME.list.length*100}%"></i></span><span class="badge">${GAME.i+1}/${GAME.list.length}</span></div>
+    <div class="qbox"><div class="qtype">Утверждение</div><div class="qtext">${esc(s[0])}</div>
+    <div class="row"><button class="btn" style="flex:1" onclick="answerTF(true)">✓ Правда</button><button class="btn red" style="flex:1" onclick="answerTF(false)">✗ Ловушка</button></div>
+    <div class="feed" id="tffeed"></div></div>`);
+}
+function answerTF(v){
+  const ok=v===GAME.list[GAME.i][1],f=$("#tffeed");
+  if(ok){GAME.score++;addXp(3);}
+  f.className="feed on "+(ok?"good":"bad");f.innerHTML=(ok?"✓ Верно!":"✗ Ловушка")+`<div class="ex">Ответ: ${GAME.list[GAME.i][1]?"правда":"неправда"}</div>`;
+  setTimeout(()=>{GAME.i++;paintTF();},550);
+}
+window.startTrueFalse=startTrueFalse;window.answerTF=answerTF;
+
+function startBlitz(mid=""){
+  let pool=[];const ms=mid?DATA.filter(m=>m.id===mid):DATA;
+  ms.forEach(m=>m.quiz.forEach(q=>{if(q.t==="choice")pool.push(Object.assign({mid:m.id},q));}));
+  if(!pool.length){toast("Нет вопросов для блица");return;}
+  GAME={mode:"blitz",mid:mid||null,list:shuffle(pool),i:0,score:0,time:60,timer:null,open:[],matched:0,locked:false};
+  arenaHost("⚡ Блиц 60 секунд",`<div class="game-stat"><span class="badge">Очки: <b id="blitzScore">0</b></span><span class="timer" id="blitzTimer">60с</span></div><div id="blitzBody"></div>`);
+  paintBlitz();
+  GAME.timer=setInterval(()=>{GAME.time--;const e=$("#blitzTimer");if(e)e.textContent=GAME.time+"с";if(GAME.time<=0){clearInterval(GAME.timer);GAME.timer=null;endGame(GAME.score,GAME.i||1,"⚡ Блиц 60 секунд");}},1000);
+}
+function paintBlitz(){
+  if(GAME.i>=GAME.list.length){endGame(GAME.score,GAME.i,"⚡ Блиц 60 секунд");return;}
+  const q=GAME.list[GAME.i], opts=q.opts||[];
+  $("#blitzBody").innerHTML=`<div class="qbox"><div class="qtype">${q.t==="multi"?"Несколько верных":"Один верный"}</div><div class="qtext">${esc(q.q)}</div>${opts.map((o,i)=>`<button class="opt" onclick="answerBlitz(${i})">${esc(o)}</button>`).join("")}</div>`;
+}
+function answerBlitz(i){
+  const q=GAME.list[GAME.i],btns=document.querySelectorAll("#blitzBody .opt");
+  let ok=q.t==="choice"?i===q.a:q.a.includes(i);
+  if(q.t==="multi"){const selected=[i];ok=selected.length===q.a.length&&q.a.includes(i);}
+  if(ok){GAME.score++;addXp(2);toast("+1");}
+  else{if(GAME.mid){const st=M(GAME.mid);const key=GAME.mid+"|"+q.q;if(!S.review.some(r=>r.k===key)){S.review.push({k:key,mid:GAME.mid,q:q.q});save();}}}
+  GAME.i++;document.getElementById("blitzScore").textContent=GAME.score;paintBlitz();
+}
+window.startBlitz=startBlitz;window.answerBlitz=answerBlitz;
+
 /* ================= review ================= */
 function renderReview(){
   let list=[];
@@ -2170,6 +2455,7 @@ function renderReview(){
   }
   h+=`<div id="reviewbody"></div>`;
   $("#v-review").innerHTML=h;
+  wrapTables(document.getElementById("v-review"));
 }
 function startReview(){
   let list=[];
